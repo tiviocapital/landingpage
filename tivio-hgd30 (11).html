@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TIVIO HGD30 — Saiba mais sobre o fundo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-style: normal !important;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #f2f2f0;
+    color: #1a1a1a;
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  em, i { font-style: normal !important; }
+  strong, b { font-style: normal !important; font-weight: 700; }
+
+  /* ── TOAST USO INTERNO ── */
+  .toast-internal {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    background: #1a1a1a;
+    color: #f2f2f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .toast-internal.hidden {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
+  .toast-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e8c96a;
+    flex-shrink: 0;
+  }
+  .toast-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0 0 8px;
+    font-style: normal !important;
+    transition: color 0.15s;
+  }
+  .toast-close:hover { color: #f2f2f0; }
+
+
+  /* ── ANCHOR TOP BAR ── */
+  .anchor-nav {
+    position: sticky;
+    top: 60px;
+    z-index: 40;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .anchor-nav::-webkit-scrollbar { display: none; }
+
+  .anchor-nav-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    white-space: nowrap;
+    gap: 0;
+  }
+
+  .anchor-nav-label { display: none; }
+
+  .anchor-nav a {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    text-decoration: none;
+    padding: 13px 14px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .anchor-nav a:hover { color: #0a0f19; }
+
+  .anchor-nav a.active {
+    color: #0a0f19;
+    font-weight: 600;
+    border-bottom-color: #0a0f19;
+  }
+
+  .anchor-target { scroll-margin-top: 130px; }
+
+  /* ── BACK TO TOP ── */
+  .back-to-top {
+    position: fixed;
+    bottom: 88px;
+    right: 28px;
+    z-index: 9998;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #0a0f19;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .back-to-top:hover { background: #2a3040; }
+  .back-to-top svg { display: block; }
+
+  @media (max-width: 600px) {
+    .anchor-nav-inner { padding: 0 16px; }
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 48px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo-link { display: inline-flex; align-items: center; }
+  .nav-logo { height: 26px; display: block; }
+
+  .nav-tag {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  /* ── HERO / CAPA ── */
+  .hero {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 56px 48px 48px;
+    max-width: 100%;
+  }
+
+  .hero-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .hero-top {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .hero-fund-logo {
+    height: auto;
+    max-height: 135px;
+    max-width: 630px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .hero-date-tag {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+    padding: 6px 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 100px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+
+
+
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hero-pretitle {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #999;
+  }
+
+  .hero-title {
+    font-size: clamp(18px, 2.8vw, 26px);
+    font-weight: 700;
+    color: #0a0f19;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-razao {
+    font-size: 12px;
+    font-weight: 400;
+    color: #aaa;
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── WRAPPER ── */
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── AUDIO ── */
+  .audio-block {
+    background: #fff;
+    border: 1px solid #e4e4e4;
+    border-radius: 6px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    background: #0a0f19;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .play-btn:hover { background: #2a3040; }
+  .play-btn svg { fill: #fff; }
+
+  .audio-info { flex: 1; min-width: 0; }
+
+  .audio-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .progress-bar {
+    height: 3px;
+    background: #ddd;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #0a0f19;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  .audio-time {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .speed-btn {
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal !important;
+    color: #888;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1.4;
+  }
+
+  .speed-btn:hover {
+    background: #f0f0f0;
+    color: #1a1a1a;
+  }
+
+  .speed-btn.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: normal !important;
+    color: #888;
+    padding: 3px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1.4;
+    margin-left: auto;
+  }
+
+  .download-btn:hover {
+    background: #f0f0f0;
+    color: #1a1a1a;
+    border-color: #bbb;
+  }
+
+  .download-btn svg {
+    flex-shrink: 0;
+  }
+
+  /* ── BODY TEXT ── */
+  .greeting {
+    font-size: 15px;
+    font-weight: 400;
+    color: #555;
+    margin-bottom: 24px;
+  }
+
+  .body-text {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.78;
+    color: #333;
+  }
+
+  .body-text p { margin-bottom: 20px; }
+
+  /* ── SECTION HEADING ── */
+  .section-heading {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #0a0f19;
+    padding-top: 40px;
+    padding-bottom: 16px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 40px;
+  }
+
+  /* ── CHARTS ── */
+  .chart-block { margin: 20px 0; }
+
+  .chart-block img {
+    width: 100%;
+    display: block;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+  }
+
+  /* ── INFO TABLE ── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .info-table tr { border-bottom: 1px solid #f0f0f0; }
+
+  .info-table td {
+    padding: 14px 0;
+    vertical-align: top;
+    font-weight: 400;
+  }
+
+  .info-table td:first-child {
+    color: #999;
+    width: 38%;
+    padding-right: 16px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .info-table td:last-child { color: #1a1a1a; }
+
+  /* ── CLOSING ── */
+  .closing {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333;
+  }
+  .closing p { margin-bottom: 6px; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .disclaimer-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 14px;
+  }
+
+  .disclaimer p {
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #bbb;
+    margin-bottom: 12px;
+  }
+
+  .disclaimer a { color: #999; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 0;
+    padding: 24px 48px;
+    border-top: 1px solid #e0e0e0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-socials { display: flex; gap: 10px; align-items: center; }
+
+  .footer-socials img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.35;
+    filter: grayscale(1);
+    transition: opacity 0.15s;
+  }
+
+  .footer-socials a:hover img { opacity: 0.7; }
+
+  .footer-link {
+    font-size: 12px;
+    color: #bbb;
+    text-decoration: none;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-link:hover { color: #333; }
+
+  @media (max-width: 600px) {
+    nav, .hero, footer { padding-left: 20px; padding-right: 20px; }
+    .page { padding-left: 20px; padding-right: 20px; }
+    .hero-top { flex-direction: column; gap: 16px; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── AUDIO CONTROLS ── */
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .speed-btn {
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-style: normal !important;
+    color: #888;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    line-height: 1.6;
+  }
+
+  .speed-btn:hover {
+    border-color: #0a0f19;
+    color: #0a0f19;
+  }
+
+  .speed-btn.active {
+    background: #0a0f19;
+    border-color: #0a0f19;
+    color: #fff;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 4px;
+    padding: 3px 11px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-style: normal !important;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    line-height: 1.6;
+  }
+
+  .download-btn:hover {
+    border-color: #0a0f19;
+    color: #0a0f19;
+  }
+
+  .download-btn svg {
+    flex-shrink: 0;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.tivio.com" target="_blank" class="nav-logo-link">
+    <img class="nav-logo"
+         src="https://cdn-sites-assets.mziq.com/wp-content/uploads/sites/1532/2025/10/logo.png"
+         alt="Tivio Capital" />
+  </a>
+</nav>
+
+<!-- ANCHOR NAV -->
+<nav class="anchor-nav" id="anchorNav">
+  <div class="anchor-nav-inner">
+    <a href="#sec-carta" class="active">Início</a>
+    <a href="#sec-alocacao">Alocação da Carteira</a>
+    <a href="#sec-setorial">Exposição Setorial</a>
+    <a href="#sec-rating">Rating</a>
+    <a href="#sec-composicao">Composição da Carteira</a>
+    <a href="#sec-rentabilidade">Rentabilidade Histórica</a>
+    <a href="#sec-caracteristicas">Características do Fundo</a>
+  </div>
+</nav>
+
+<!-- HERO / CAPA -->
+<div class="hero">
+  <div class="hero-inner">
+
+    <div class="hero-top">
+      <span class="hero-date-tag">Referente a Abril de 2026</span>
+    </div>
+
+    <div class="hero-body">
+      <strong class="hero-pretitle">Saiba mais sobre o fundo de previdência</strong>
+      <img class="hero-fund-logo"
+           src="https://www.tivio.com/wp-content/uploads/sites/1532/2026/05/logo_HGD30-Preto.png"
+           alt="TIVIO HGD30" />
+      <p class="hero-razao">BRADESCO TIVIO HGD30 FIF CLASSE INVESTIMENTO RF CP FIFE RL &nbsp;·&nbsp; CNPJ 59.889.169/0001-97</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- AUDIO -->
+  <div class="audio-block">
+    <button class="play-btn" id="playBtn" onclick="toggleAudio()">
+      <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="audio-info">
+      <div class="audio-name">TIVIO HGD30 — Resumo em áudio · Abril 2026</div>
+      <div class="progress-bar" id="progressBar" onclick="seekAudio(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="audio-time" id="audioTime">0:00 / 0:00</div>
+      <div class="audio-controls">
+        <button class="speed-btn active" onclick="setSpeed(1, this)">1×</button>
+        <button class="speed-btn" onclick="setSpeed(1.5, this)">1.5×</button>
+        <button class="speed-btn" onclick="setSpeed(2, this)">2×</button>
+        <button class="speed-btn" onclick="setSpeed(3, this)">3×</button>
+        <a class="download-btn" id="downloadBtn" href="https://www.tivio.com/wp-content/uploads/sites/1532/2026/05/Teste-HGD30.mp3" download="TIVIO-HGD30-Abril-2026.mp3" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </a>
+      </div>
+    </div>
+    <audio id="audioPlayer"
+           src="https://www.tivio.com/wp-content/uploads/sites/1532/2026/05/Teste-HGD30.mp3"
+           preload="metadata"></audio>
+  </div>
+
+  <!-- CORPO DA CARTA -->
+  <p id="sec-carta" class="anchor-target greeting">Prezados(as).</p>
+
+  <div class="body-text">
+    <p>Durante o mês, observamos uma maior dificuldade de captação por parte dos fundos de crédito. O aumento dos pedidos de recuperação extrajudicial ao longo do primeiro trimestre elevou a cautela dos investidores em relação aos ativos da classe, reduzindo o apetite por risco. Esse movimento impactou diretamente o mercado primário, com empresas enfrentando maior dificuldade para acessar o mercado de capitais, além de contribuir para o aumento dos resgates nos fundos. Como consequência, houve ajustes generalizados nos spreads, o que pressionou negativamente a performance da indústria. A partir da segunda quinzena de abril, no entanto, observou-se uma recuperação parcial dos spreads de crédito, contribuindo para a recomposição de parte da rentabilidade dos fundos.</p>
+
+    <p>De acordo com estudo elaborado com base nos ativos monitorados pela <strong>ANBIMA</strong>, os papéis de crédito atrelados ao CDI apresentaram abertura média de spreads de aproximadamente <strong>0,03%</strong> em relação a março. A taxa média encerrou o período em torno de <strong>CDI +1,46% a.a.</strong> (ante CDI +1,43% no mês anterior), enquanto a duration média atingiu <strong>2,79 anos</strong>, permanecendo praticamente estável frente aos 2,78 anos observados previamente.</p>
+
+    <p>No mercado de crédito, as perdas podem ser compreendidas sob duas óticas: aquelas decorrentes de <strong>eventos de crédito</strong>, que são definitivas, e aquelas resultantes da <strong>abertura de spreads</strong>, que tendem a ser temporárias, elevam o carrego e ampliam as oportunidades de geração de alfa até o vencimento dos ativos. Nos fundos da Tivio, a volatilidade observada nos últimos meses decorreu exclusivamente deste segundo fator, sem a ocorrência de qualquer evento de crédito na carteira.</p>
+
+    <p>Do ponto de vista da gestão, mantivemos uma postura cautelosa diante do cenário, com níveis de caixa ainda elevados. Reduzimos exposições em ativos com spreads mais comprimidos e seguimos aguardando oportunidades para reassumir risco em patamares mais atrativos. Apesar do ambiente desafiador para a indústria, avaliamos que, de forma geral, os gestores encontram-se mais bem preparados para este ciclo de ajuste do que em episódios anteriores, quando as aberturas de spreads ocorreram de forma mais abrupta e inesperada. Entre os desinvestimentos parciais realizados no período, destacam-se debêntures de <strong>Suzano</strong>, <strong>Sabesp</strong>, <strong>Randon</strong> e <strong>Azzas</strong>.</p>
+
+    <p>Nesse contexto, o fundo apresentou rentabilidade de <strong>1,13% em abril</strong>, equivalente a <strong>103,4% do CDI</strong>. No detalhamento da performance, a posição em <strong>Aegea</strong> contribuiu negativamente, com impacto superior a 2 pontos-base. O atraso na divulgação das demonstrações financeiras pressionou os spreads da companhia, elevando a percepção de risco por parte dos investidores. A ausência de informações gerou preocupações quanto a possíveis reclassificações contábeis com impacto relevante na alavancagem e na capacidade de pagamento da empresa. Adicionalmente, houve pressão por parte de agência de rating para a divulgação dos resultados, incluindo a possibilidade de rebaixamento, o que poderia implicar quebra de covenants e eventual antecipação de dívidas. Ao final, os resultados foram divulgados no limite do prazo, com reconhecimento de baixa contábil relevante, porém sem impacto em caixa, em linha com o que vinha sendo antecipado pelo mercado. Seguimos acompanhando de perto os desdobramentos relacionados à companhia.</p>
+
+    <p>Por outro lado, o conjunto dos demais emissores contribuiu positivamente para o resultado, com destaque para <strong>Hapvida</strong> e <strong>Sendas</strong>, que apresentaram recuperações de spreads, com impactos positivos de aproximadamente <strong>6</strong> e <strong>3 pontos-base</strong>, respectivamente.</p>
+  </div>
+
+  <!-- IMAGENS DO EMAIL -->
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/b99655f2-a266-5ca0-5e06-4e0869cd3bd4.png" alt="" />
+  </div>
+
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/7e642ba2-2563-b759-4bd8-537848a73b3e.png" alt="" />
+  </div>
+
+  <!-- ALOCAÇÃO DA CARTEIRA -->
+  <div id="sec-alocacao" class="anchor-target section-heading">Alocação da Carteira</div>
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/6d698f20-3d2f-49f4-1c8f-3e8a6dbe781b.png" alt="Alocação da Carteira" />
+  </div>
+
+  <!-- EXPOSIÇÃO SETORIAL -->
+  <div id="sec-setorial" class="anchor-target section-heading">Exposição Setorial</div>
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/4800db75-0b6f-61b1-fcfc-42db4f801123.png" alt="Exposição Setorial" />
+  </div>
+
+  <!-- RATING -->
+  <div id="sec-rating" class="anchor-target section-heading">Distribuição de Rating da Carteira — Exposição de Rating Externo</div>
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/d3eeadd3-4617-e0a4-6a34-5f10dd441c1b.png" alt="Distribuição de Rating" />
+  </div>
+
+  <!-- COMPOSIÇÃO DA CARTEIRA -->
+  <div id="sec-composicao" class="anchor-target section-heading">Composição da Carteira</div>
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/2e3ab353-f2bd-b246-2bf7-d2807baf0f84.png" alt="Composição da carteira" />
+  </div>
+
+  <!-- RENTABILIDADE HISTÓRICA -->
+  <div id="sec-rentabilidade" class="anchor-target section-heading">Rentabilidade Histórica</div>
+  <div class="chart-block">
+    <img src="https://mcusercontent.com/3004719c296506b695cd6f687/images/2452e610-ce4e-5783-1ec1-3dd07b6e4866.png" alt="Rentabilidade histórica" />
+  </div>
+
+  <!-- CARACTERÍSTICAS DO FUNDO -->
+  <div id="sec-caracteristicas" class="anchor-target section-heading">Características do Fundo</div>
+  <table class="info-table">
+    <tr>
+      <td>Nome</td>
+      <td><strong>BRADESCO TIVIO HGD30 FIF CLASSE INVESTIMENTO RF CP FIFE RL</strong></td>
+    </tr>
+    <tr>
+      <td>CNPJ</td>
+      <td>59.889.169/0001-97</td>
+    </tr>
+    <tr>
+      <td>Data de início do fundo</td>
+      <td>09/05/2025</td>
+    </tr>
+    <tr>
+      <td>PL médio (12M)</td>
+      <td><strong>R$ 1.858.704.705</strong></td>
+    </tr>
+    <tr>
+      <td>Público alvo</td>
+      <td>Investidores Profissionais — Plano Gerador de Benefício Livre (PGBL) e de Vida Gerador de Benefício Livre (VGBL), instituídos e sob responsabilidade do Bradesco Vida e Previdência S.A.</td>
+    </tr>
+    <tr>
+      <td>Taxas</td>
+      <td>Administração: 0,016% | Gestão: 0,184% | Estruturação: 0,20%<br/>Máxima de Administração: 0,05% | Máxima de Gestão: 0,50% | Custódia: 0,03%</td>
+    </tr>
+  </table>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <p>Em caso de dúvidas, entre em contato conosco.</p>
+    <p>Atenciosamente,</p>
+    <p><strong>Tivio Capital</strong></p>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <div class="disclaimer-title">Disclaimer</div>
+    <p>Este material foi elaborado pela Tivio Capital Distribuidora de Títulos e Valores Mobiliários S.A. ("TIVIO CAPITAL"). Este material é destinado aos seus receptores, fornecido unicamente para fins comerciais, não constituindo compromisso, indicação ou recomendação para iniciar ou encerrar qualquer transação. Este conteúdo não deve ser reproduzido no todo ou em parte, redistribuído ou transmitido para qualquer outra pessoa sem o consentimento prévio da TIVIO CAPITAL.</p>
+    <p>Consulte o documento de tributação para Fundos de Investimento para mais informações sobre a tributação aplicável. A descrição acima não pode ser considerada como objetivo do fundo. Todas as informações legais podem ser observadas no regulamento do fundo, disponíveis no site <a href="https://tivio.com/fundos/" target="_blank">tivio.com/fundos</a>. Principais Fatores de Risco: (i) Crédito; (ii) Liquidez; (iii) Mercado; (iv) Derivativos; (v) Tratamento Tributário de Longo Prazo.</p>
+    <p>Leia a lâmina de informações essenciais e o regulamento antes de investir. A rentabilidade obtida no passado não representa garantia de resultados futuros. A rentabilidade divulgada não é líquida de impostos. Para avaliação da performance, é recomendável uma análise de, no mínimo, 12 meses. Fundos de investimento não contam com garantia do FGC. Material de Divulgação.</p>
+    <p>SAC: 0800 704 8383 — Atendimento 24 horas &nbsp;·&nbsp; Ouvidoria: 0800 727 9933 — Seg a Sex, 9h às 18h, exceto feriados nacionais.</p>
+  </div>
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://www.tivio.com" target="_blank" class="footer-link">www.tivio.com</a>
+  <div class="footer-socials">
+    <a href="#" target="_blank">
+      <img src="https://cdn-images.mailchimp.com/icons/social-block-v3/block-icons-v3/linkedin-outline-light-40.png" alt="LinkedIn" />
+    </a>
+    <a href="#" target="_blank">
+      <img src="https://cdn-images.mailchimp.com/icons/social-block-v3/block-icons-v3/instagram-outline-light-40.png" alt="Instagram" />
+    </a>
+    <a href="#" target="_blank">
+      <img src="https://cdn-images.mailchimp.com/icons/social-block-v3/block-icons-v3/youtube-outline-light-40.png" alt="YouTube" />
+    </a>
+  </div>
+</footer>
+
+<script>
+  const audio = document.getElementById('audioPlayer');
+  const playIcon = document.getElementById('playIcon');
+  const progressFill = document.getElementById('progressFill');
+  const audioTime = document.getElementById('audioTime');
+
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    return m + ':' + Math.floor(s % 60).toString().padStart(2, '0');
+  }
+
+  function toggleAudio() {
+    if (audio.paused) {
+      audio.play();
+      playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    } else {
+      audio.pause();
+      playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    }
+  }
+
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+      audioTime.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    progressFill.style.width = '0%';
+  });
+
+  audio.addEventListener('loadedmetadata', () => {
+    audioTime.textContent = '0:00 / ' + fmt(audio.duration);
+  });
+
+
+
+  // ── BACK TO TOP ──
+  const btt = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    btt.classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // ── ANCHOR NAV HIGHLIGHT ──
+  const anchorLinks = document.querySelectorAll('.anchor-nav a');
+  const sections = ['sec-carta','sec-alocacao','sec-setorial','sec-rating','sec-composicao','sec-rentabilidade','sec-caracteristicas'];
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        anchorLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector('.anchor-nav a[href="#' + entry.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
+
+  function seekAudio(e) {
+    const bar = document.getElementById('progressBar');
+    const r = bar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+  }
+
+  function setSpeed(rate, btn) {
+    audio.playbackRate = rate;
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+
+<!-- BACK TO TOP -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Voltar ao topo">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<!-- TOAST USO INTERNO -->
+<div class="toast-internal" id="toastInternal">
+  <span class="toast-dot"></span>
+  <span>Material de Uso Interno</span>
+  <button class="toast-close" onclick="document.getElementById('toastInternal').classList.add('hidden')" aria-label="Fechar">&#x2715;</button>
+</div>
+</body>
+</html>
